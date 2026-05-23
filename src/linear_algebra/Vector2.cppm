@@ -64,7 +64,7 @@ namespace math {
         template<typename U>
         requires ArithmeticTypes<U, T>
         constexpr bool operator!=(const Vector2<U> &rhs) const {
-            return !(*this == rhs);
+            return this->x != rhs.x || this->y != rhs.y;
         }
 
         friend std::ostream& operator<<(std::ostream& os, const Vector2<T>& vec) {
