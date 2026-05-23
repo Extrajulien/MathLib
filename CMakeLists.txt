@@ -26,6 +26,7 @@ if(BUILD_TESTING)
     add_executable(Tests
             tests/test_main.cpp
             tests/linear_algebra/Vector2_tests.cpp
+            tests/linear_algebra/Vector3_tests.cpp
     )
 
     # 4. Point the test executable to doctest and your library headers
