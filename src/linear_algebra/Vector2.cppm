@@ -125,6 +125,17 @@ namespace math {
     export
     template<typename T,typename U>
     requires ArithmeticTypes<T, U>
+    constexpr auto operator*(const Vector2<T>& lhs, const U rhs) {
+        return Vector2<decltype(std::declval<T>() * std::declval<U>())>(
+            lhs.x * rhs,
+            lhs.y * rhs
+        );
+    }
+
+
+    export
+    template<typename T,typename U>
+    requires ArithmeticTypes<T, U>
     constexpr auto operator-(const Vector2<T>& lhs, const Vector2<U>& rhs) {
         return Vector2<decltype(std::declval<T>() - std::declval<U>())>(
             lhs.x - rhs.x,
