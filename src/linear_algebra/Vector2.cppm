@@ -11,13 +11,6 @@ module;
 export module MathLib:Vector2;
 import :internal;
 
-template<typename T, typename U = int>
-concept ArithmeticTypes = std::floating_point<T> || std::integral<T> &&
-                          std::floating_point<U> || std::integral<U>;
-
-template<typename T, typename U>
-using PrecisionResult = decltype(std::declval<T>() / std::declval<U>());
-
 namespace math {
 
     export
