@@ -57,19 +57,10 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr bool operator==(const Vector2<U> &rhs) const {
-            return this->x == rhs.x && this->y == rhs.y;
-        }
-
-        template<typename U>
-        requires ArithmeticTypes<U, T>
-        constexpr bool operator!=(const Vector2<U> &rhs) const {
-            return this->x != rhs.x || this->y != rhs.y;
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Vector2<T>& vec) {
-            os << "(" << vec.x << ", " << vec.y << ")";
-            return os;
+        constexpr Vector2& operator*=(const U rhs) {
+            this->x = static_cast<T>( this->x * rhs );
+            this->y = static_cast<T>( this->y * rhs );
+            return *this;
         }
 
         template<typename U>
@@ -83,9 +74,27 @@ namespace math {
         template<typename U>
         requires ArithmeticTypes<T, U> && std::convertible_to<U, double>
         constexpr Vector2& operator/=(U rhs) {
-            this->x = static_cast<T>(this->x / static_cast<double>(rhs));
-            this->y = static_cast<T>(this->y / static_cast<double>(rhs));
+            using DivType = std::conditional_t<std::is_integral_v<U>, double, U>;
+            this->x = static_cast<T>(this->x / static_cast<DivType>(rhs));
+            this->y = static_cast<T>(this->y / static_cast<DivType>(rhs));
             return *this;
+        }
+
+        template<typename U>
+        requires ArithmeticTypes<U, T>
+        constexpr bool operator==(const Vector2<U> &rhs) const {
+            return this->x == rhs.x && this->y == rhs.y;
+        }
+
+        template<typename U>
+        requires ArithmeticTypes<U, T>
+        constexpr bool operator!=(const Vector2<U> &rhs) const {
+            return this->x != rhs.x || this->y != rhs.y;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const Vector2<T>& vec) {
+            os << "(" << vec.x << ", " << vec.y << ")";
+            return os;
         }
     };
 
