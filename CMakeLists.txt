@@ -7,12 +7,12 @@ set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
 add_library(${PROJECT_NAME} STATIC)
 
-
-
 target_sources(${PROJECT_NAME}
         PUBLIC
         FILE_SET CXX_MODULES FILES
-
+        src/linear_algebra/Vector2.cppm
+        src/internal/math_helpers.cppm
+        src/MathLib.cppm
         PRIVATE
         # hidden cpp files
 )

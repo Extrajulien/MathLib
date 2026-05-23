@@ -1,0 +1,6 @@
+//
+// Created by julien on 2026-05-22.
+//
+
+export module MathLib;
+export import :Vector2;
