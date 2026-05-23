@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
-project(Math_lib LANGUAGES CXX)
+project(MathLib LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_ASM_STANDARD_REQUIRED ON)
@@ -11,6 +11,7 @@ target_sources(${PROJECT_NAME}
         PUBLIC
         FILE_SET CXX_MODULES FILES
         src/linear_algebra/Vector2.cppm
+        src/linear_algebra/Vector3.cppm
         src/internal/math_helpers.cppm
         src/MathLib.cppm
         PRIVATE
