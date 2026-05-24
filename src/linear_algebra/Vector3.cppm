@@ -74,7 +74,8 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<T, U> && std::convertible_to<U, double>
-        constexpr Vector3& operator/=(U rhs) {
+        constexpr Vector3& operator/=(const U rhs) {
+            if (rhs == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector3 components by 0."); }
             using DivType = std::conditional_t<std::is_integral_v<U>, double, U>;
             this->x = static_cast<T>( this->x / static_cast<DivType>( rhs ) );
             this->y = static_cast<T>( this->y / static_cast<DivType>( rhs ) );
@@ -164,7 +165,7 @@ namespace math {
     requires ArithmeticTypes<T, U>
     constexpr auto operator/(const Vector3<T>& lhs, const Vector3<U>& rhs) -> Vector3<PrecisionResult<T, U>> {
         using ReturnType = PrecisionResult<T, U>;
-        if (rhs.x == 0 || rhs.y == 0 || rhs.z == 0) throw std::invalid_argument("cannot divide Vector3 components by 0.");
+        if (rhs.x == 0 || rhs.y == 0 || rhs.z == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector3 components by 0."); }
         return {
             static_cast<ReturnType>( lhs.x / static_cast<double>( rhs.x ) ),
             static_cast<ReturnType>( lhs.y / static_cast<double>( rhs.y ) ),
@@ -177,7 +178,7 @@ namespace math {
     requires ArithmeticTypes<T, U>
     constexpr auto operator/(const Vector3<T>& lhs, const U rhs) -> Vector3<PrecisionResult<T, U>> {
         using ReturnType = PrecisionResult<T, U>;
-        if (rhs == 0) throw std::invalid_argument("cannot divide Vector3 components by 0.");
+        if (rhs == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector3 components by 0."); }
         double invRhs = 1.0 / static_cast<double>( rhs );
         return {
             static_cast<ReturnType>( lhs.x * invRhs ),
