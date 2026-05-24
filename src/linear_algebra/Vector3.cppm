@@ -84,6 +84,18 @@ namespace math {
         }
 
         template<typename U>
+        requires ArithmeticTypes<T, U>
+        constexpr Vector3& operator/=(const Vector3<U>& rhs) {
+            using DivType = std::conditional_t<std::is_integral_v<U>, double, U>;
+            if (rhs.x == 0 || rhs.y == 0 || rhs.z == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector3 components by 0."); }
+            this->x = static_cast<T>( this->x / static_cast<DivType>( rhs.x ) );
+            this->y = static_cast<T>( this->y / static_cast<DivType>( rhs.y ) );
+            this->z = static_cast<T>( this->z / static_cast<DivType>( rhs.z ) );
+
+            return *this;
+        }
+
+        template<typename U>
         requires ArithmeticTypes<U, T>
         constexpr bool operator==(const Vector3<U> &rhs) const {
             return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;

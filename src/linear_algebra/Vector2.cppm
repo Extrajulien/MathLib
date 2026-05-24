@@ -76,8 +76,18 @@ namespace math {
         constexpr Vector2& operator/=(const U rhs) {
             if (rhs == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector2 components by 0."); }
             using DivType = std::conditional_t<std::is_integral_v<U>, double, U>;
-            this->x = static_cast<T>(this->x / static_cast<DivType>(rhs));
-            this->y = static_cast<T>(this->y / static_cast<DivType>(rhs));
+            this->x = static_cast<T>( this->x / static_cast<DivType>( rhs ) );
+            this->y = static_cast<T>( this->y / static_cast<DivType>( rhs ) );
+            return *this;
+        }
+
+        template<typename U>
+        requires ArithmeticTypes<T, U>
+        constexpr Vector2& operator/=(const Vector2<U>& rhs) {
+            using DivType = std::conditional_t<std::is_integral_v<U>, double, U>;
+            if (rhs.x == 0 || rhs.y == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Vector2 components by 0."); }
+            this->x = static_cast<T>( this->x / static_cast<DivType>( rhs.x ) );
+            this->y = static_cast<T>( this->y / static_cast<DivType>( rhs.y ) );
             return *this;
         }
 
