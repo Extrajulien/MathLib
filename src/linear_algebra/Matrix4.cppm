@@ -5,11 +5,17 @@ module;
 #include <iostream>
 
 export module MathLib:Matrix4;
-import :internal;
+//import :internal;
 namespace math {
     //for SIMD optimization matrix4 only supports float
-    struct alignas(64) Matrix4 {
-        //the column contains the row (accessed [col][row])
+    // column major matrix 4x4 float struct
+    export struct alignas(64) Matrix4 {
+        friend constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs);
+        friend constexpr Matrix4 operator-(Matrix4 const& lhs);
+        friend constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs);
+        friend constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs);
+        friend constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar);
+        friend constexpr Matrix4 operator/(Matrix4 const& lhs,float const& scalar);
     private:
         struct alignas(16) Column {
             std::array<float, 4> rowEntry;
@@ -34,34 +40,75 @@ namespace math {
                 std::array<float, 4>({n03, n13, n23, n33})
             }) {}
 
-        Column& operator[](const size_t row) {
+        constexpr Matrix4(const std::array<float, 16>& array) : matrix({
+            {array[0], array[4], array[8],  array[12]},
+            {array[1], array[5], array[9],  array[13]},
+            {array[2], array[6], array[10], array[14]},
+            {array[3], array[7], array[11], array[15]}
+        }) {}
+
+        constexpr Column& operator[](const size_t row) {
             return matrix[row];
         }
-        const Column& operator[](const size_t row) const {
+        constexpr const Column& operator[](const size_t row) const {
             return matrix[row];
         }
 
-        Matrix4& operator+=(Matrix4 const& other) {
+
+        constexpr Matrix4& operator+=(Matrix4 const& other) {
             *this = *this + other;
             return *this;
         }
 
-        Matrix4& operator-=(Matrix4 const& other) {
+        constexpr Matrix4& operator-=(Matrix4 const& other) {
             *this = *this - other;
             return *this;
         }
 
-        Matrix4& operator*=(const Matrix4 &other) {
+        constexpr Matrix4& operator*=(const Matrix4 &other) {
             *this = *this * other;
             return *this;
         }
 
-        Matrix4& operator*=(float const& scalar) {
+        constexpr Matrix4& operator*=(float const& scalar) {
             *this = *this * scalar;
             return *this;
         }
 
-        Matrix4& operator= (const Matrix4 &other) {
+        constexpr Matrix4& operator/=(float const& scalar) {
+            *this = *this / scalar;
+            return *this;
+        }
+
+        [[nodiscard]] constexpr std::array<float, 16> toArray() const {
+            return {
+                matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
+                matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
+                matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
+                matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]
+            };
+        }
+
+        [[nodiscard]] const float* toPtr() const {
+            return matrix[0].rowEntry.data();
+        }
+
+        constexpr bool operator==(const Matrix4& rhs) const {
+            return matrix[0][0] == rhs[0][0] && matrix[0][1] == rhs[0][1]
+            && matrix[0][2] == rhs[0][2] && matrix[0][3] == rhs[0][3]
+            && matrix[1][0] == rhs[1][0] && matrix[1][1] == rhs[1][1]
+            && matrix[1][2] == rhs[1][2] && matrix[1][3] == rhs[1][3]
+            && matrix[2][0] == rhs[2][0] && matrix[2][1] == rhs[2][1]
+            && matrix[2][2] == rhs[2][2] && matrix[2][3] == rhs[2][3]
+            && matrix[3][0] == rhs[3][0] && matrix[3][1] == rhs[3][1]
+            && matrix[3][2] == rhs[3][2] && matrix[3][3] == rhs[3][3];
+        }
+
+        constexpr bool operator!=(const Matrix4& rhs) const {
+            return !(*this == rhs);
+        }
+
+        constexpr Matrix4& operator= (const Matrix4 &other) {
             matrix[0][0] = other[0][0];
             matrix[0][1] = other[0][1];
             matrix[0][2] = other[0][2];
@@ -86,8 +133,10 @@ namespace math {
 
     };
 
-    Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs) {
-    return {
+    export using Matrix4f = Matrix4;
+
+    export constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs) {
+        return {
             lhs[0][0]+rhs[0][0],lhs[1][0]+rhs[1][0],lhs[2][0]+rhs[2][0],lhs[3][0]+rhs[3][0],
             lhs[0][1]+rhs[0][1],lhs[1][1]+rhs[1][1],lhs[2][1]+rhs[2][1],lhs[3][1]+rhs[3][1],
             lhs[0][2]+rhs[0][2],lhs[1][2]+rhs[1][2],lhs[2][2]+rhs[2][2],lhs[3][2]+rhs[3][2],
@@ -95,15 +144,15 @@ namespace math {
         };
     }
 
-    Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs) {
+    export constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs) {
     	return {
-                lhs[0][0]-rhs[0][0],lhs[1][0]-rhs[1][0],lhs[2][0]-rhs[2][0],lhs[3][0]-rhs[3][0],
-                lhs[0][1]-rhs[0][1],lhs[1][1]-rhs[1][1],lhs[2][1]-rhs[2][1],lhs[3][1]-rhs[3][1],
-                lhs[0][2]-rhs[0][2],lhs[1][2]-rhs[1][2],lhs[2][2]-rhs[2][2],lhs[3][2]-rhs[3][2],
-                lhs[0][3]-rhs[0][3],lhs[1][3]-rhs[1][3],lhs[2][3]-rhs[2][3],lhs[3][3]-rhs[3][3]
-            };
+    	    lhs[0][0]-rhs[0][0],lhs[1][0]-rhs[1][0],lhs[2][0]-rhs[2][0],lhs[3][0]-rhs[3][0],
+    	    lhs[0][1]-rhs[0][1],lhs[1][1]-rhs[1][1],lhs[2][1]-rhs[2][1],lhs[3][1]-rhs[3][1],
+    	    lhs[0][2]-rhs[0][2],lhs[1][2]-rhs[1][2],lhs[2][2]-rhs[2][2],lhs[3][2]-rhs[3][2],
+    	    lhs[0][3]-rhs[0][3],lhs[1][3]-rhs[1][3],lhs[2][3]-rhs[2][3],lhs[3][3]-rhs[3][3]
+    	};
     }
-    Matrix4 operator-(Matrix4 const& lhs) {
+    export constexpr Matrix4 operator-(Matrix4 const& lhs) {
         return {
             -lhs[0][0],-lhs[1][0],-lhs[2][0],-lhs[3][0],
             -lhs[0][1],-lhs[1][1],-lhs[2][1],-lhs[3][1],
@@ -112,45 +161,46 @@ namespace math {
         };
     }
 
-    Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs) {
+    export constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs) {
         return {
-                lhs[0][0]*rhs[0][0]+lhs[1][0]*rhs[0][1]+lhs[2][0]*rhs[0][2]+lhs[3][0]*rhs[0][3],
-                lhs[0][0]*rhs[1][0]+lhs[1][0]*rhs[1][1]+lhs[2][0]*rhs[1][2]+lhs[3][0]*rhs[1][3],
-                lhs[0][0]*rhs[2][0]+lhs[1][0]*rhs[2][1]+lhs[2][0]*rhs[2][2]+lhs[3][0]*rhs[2][3],
-                lhs[0][0]*rhs[3][0]+lhs[1][0]*rhs[3][1]+lhs[2][0]*rhs[3][2]+lhs[3][0]*rhs[3][3],
+            lhs[0][0]*rhs[0][0]+lhs[1][0]*rhs[0][1]+lhs[2][0]*rhs[0][2]+lhs[3][0]*rhs[0][3],
+            lhs[0][0]*rhs[1][0]+lhs[1][0]*rhs[1][1]+lhs[2][0]*rhs[1][2]+lhs[3][0]*rhs[1][3],
+            lhs[0][0]*rhs[2][0]+lhs[1][0]*rhs[2][1]+lhs[2][0]*rhs[2][2]+lhs[3][0]*rhs[2][3],
+            lhs[0][0]*rhs[3][0]+lhs[1][0]*rhs[3][1]+lhs[2][0]*rhs[3][2]+lhs[3][0]*rhs[3][3],
 
-                lhs[0][1]*rhs[0][0]+lhs[1][1]*rhs[0][1]+lhs[2][1]*rhs[0][2]+lhs[3][1]*rhs[0][3],
-                lhs[0][1]*rhs[1][0]+lhs[1][1]*rhs[1][1]+lhs[2][1]*rhs[1][2]+lhs[3][1]*rhs[1][3],
-                lhs[0][1]*rhs[2][0]+lhs[1][1]*rhs[2][1]+lhs[2][1]*rhs[2][2]+lhs[3][1]*rhs[2][3],
-                lhs[0][1]*rhs[3][0]+lhs[1][1]*rhs[3][1]+lhs[2][1]*rhs[3][2]+lhs[3][1]*rhs[3][3],
+            lhs[0][1]*rhs[0][0]+lhs[1][1]*rhs[0][1]+lhs[2][1]*rhs[0][2]+lhs[3][1]*rhs[0][3],
+            lhs[0][1]*rhs[1][0]+lhs[1][1]*rhs[1][1]+lhs[2][1]*rhs[1][2]+lhs[3][1]*rhs[1][3],
+            lhs[0][1]*rhs[2][0]+lhs[1][1]*rhs[2][1]+lhs[2][1]*rhs[2][2]+lhs[3][1]*rhs[2][3],
+            lhs[0][1]*rhs[3][0]+lhs[1][1]*rhs[3][1]+lhs[2][1]*rhs[3][2]+lhs[3][1]*rhs[3][3],
 
-                lhs[0][2]*rhs[0][0]+lhs[1][2]*rhs[0][1]+lhs[2][2]*rhs[0][2]+lhs[3][2]*rhs[0][3],
-                lhs[0][2]*rhs[1][0]+lhs[1][2]*rhs[1][1]+lhs[2][2]*rhs[1][2]+lhs[3][2]*rhs[1][3],
-                lhs[0][2]*rhs[2][0]+lhs[1][2]*rhs[2][1]+lhs[2][2]*rhs[2][2]+lhs[3][2]*rhs[2][3],
-                lhs[0][2]*rhs[3][0]+lhs[1][2]*rhs[3][1]+lhs[2][2]*rhs[3][2]+lhs[3][2]*rhs[3][3],
+            lhs[0][2]*rhs[0][0]+lhs[1][2]*rhs[0][1]+lhs[2][2]*rhs[0][2]+lhs[3][2]*rhs[0][3],
+            lhs[0][2]*rhs[1][0]+lhs[1][2]*rhs[1][1]+lhs[2][2]*rhs[1][2]+lhs[3][2]*rhs[1][3],
+            lhs[0][2]*rhs[2][0]+lhs[1][2]*rhs[2][1]+lhs[2][2]*rhs[2][2]+lhs[3][2]*rhs[2][3],
+            lhs[0][2]*rhs[3][0]+lhs[1][2]*rhs[3][1]+lhs[2][2]*rhs[3][2]+lhs[3][2]*rhs[3][3],
 
-                lhs[0][3]*rhs[0][0]+lhs[1][3]*rhs[0][1]+lhs[2][3]*rhs[0][2]+lhs[3][3]*rhs[0][3],
-                lhs[0][3]*rhs[1][0]+lhs[1][3]*rhs[1][1]+lhs[2][3]*rhs[1][2]+lhs[3][3]*rhs[1][3],
-                lhs[0][3]*rhs[2][0]+lhs[1][3]*rhs[2][1]+lhs[2][3]*rhs[2][2]+lhs[3][3]*rhs[2][3],
-                lhs[0][3]*rhs[3][0]+lhs[1][3]*rhs[3][1]+lhs[2][3]*rhs[3][2]+lhs[3][3]*rhs[3][3]
-            };
+            lhs[0][3]*rhs[0][0]+lhs[1][3]*rhs[0][1]+lhs[2][3]*rhs[0][2]+lhs[3][3]*rhs[0][3],
+            lhs[0][3]*rhs[1][0]+lhs[1][3]*rhs[1][1]+lhs[2][3]*rhs[1][2]+lhs[3][3]*rhs[1][3],
+            lhs[0][3]*rhs[2][0]+lhs[1][3]*rhs[2][1]+lhs[2][3]*rhs[2][2]+lhs[3][3]*rhs[2][3],
+            lhs[0][3]*rhs[3][0]+lhs[1][3]*rhs[3][1]+lhs[2][3]*rhs[3][2]+lhs[3][3]*rhs[3][3]
+        };
     }
 
-    Matrix4 operator*(Matrix4 const& lhs,float const& scalar) {
+    export constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar) {
         return {
-                lhs[0][0]*scalar, lhs[1][0]*scalar, lhs[2][0]*scalar, lhs[3][0]*scalar,
-                lhs[0][1]*scalar, lhs[1][1]*scalar, lhs[2][1]*scalar, lhs[3][1]*scalar,
-                lhs[0][2]*scalar, lhs[1][2]*scalar, lhs[2][2]*scalar, lhs[3][2]*scalar,
-                lhs[0][3]*scalar, lhs[1][3]*scalar, lhs[2][3]*scalar, lhs[3][3]*scalar
-        	};
+            lhs[0][0]*scalar, lhs[1][0]*scalar, lhs[2][0]*scalar, lhs[3][0]*scalar,
+            lhs[0][1]*scalar, lhs[1][1]*scalar, lhs[2][1]*scalar, lhs[3][1]*scalar,
+            lhs[0][2]*scalar, lhs[1][2]*scalar, lhs[2][2]*scalar, lhs[3][2]*scalar,
+            lhs[0][3]*scalar, lhs[1][3]*scalar, lhs[2][3]*scalar, lhs[3][3]*scalar
+        };
     }
 
-    Matrix4 operator/(Matrix4 const& lhs,float const& scalar) {
+    export constexpr Matrix4 operator/(Matrix4 const& lhs,float const& scalar) {
+        if (scalar == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Matrix4 components by 0."); }
         return {
-                lhs[0][0]/scalar, lhs[1][0]/scalar, lhs[2][0]/scalar, lhs[3][0]/scalar,
-                lhs[0][1]/scalar, lhs[1][1]/scalar, lhs[2][1]/scalar, lhs[3][1]/scalar,
-                lhs[0][2]/scalar, lhs[1][2]/scalar, lhs[2][2]/scalar, lhs[3][2]/scalar,
-                lhs[0][3]/scalar, lhs[1][3]/scalar, lhs[2][3]/scalar, lhs[3][3]/scalar
-        	};
+            lhs[0][0]/scalar, lhs[1][0]/scalar, lhs[2][0]/scalar, lhs[3][0]/scalar,
+            lhs[0][1]/scalar, lhs[1][1]/scalar, lhs[2][1]/scalar, lhs[3][1]/scalar,
+            lhs[0][2]/scalar, lhs[1][2]/scalar, lhs[2][2]/scalar, lhs[3][2]/scalar,
+            lhs[0][3]/scalar, lhs[1][3]/scalar, lhs[2][3]/scalar, lhs[3][3]/scalar
+        };
     }
 }
