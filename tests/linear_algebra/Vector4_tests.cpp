@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <type_traits>
 
-#include "doctest/doctest.h"
+#include "doctest.h"
 
 import MathLib;
 
