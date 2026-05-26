@@ -8,3 +8,5 @@ export import :Vector3;
 export import :Vector4;
 export import :Matrix4;
 export import :LinearFactory;
+
+export import :Angle;

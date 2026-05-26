@@ -6,6 +6,7 @@ target_sources(${PROJECT_NAME}
         linear_algebra/Vector4.cppm
         linear_algebra/Matrix4.cppm
         linear_algebra/Factory.cppm
+        trigonometry/Angle.cppm
         internal/math_helpers.cppm
         MathLib.cppm
         PRIVATE
