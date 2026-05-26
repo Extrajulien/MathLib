@@ -5,7 +5,7 @@ module;
 
 export module MathLib:Angle;
 import :Vector2;
-
+import :internal;
 namespace math {
     export class Angle {
         float m_radians = 0;
@@ -41,7 +41,11 @@ namespace math {
             if (vec.x == 0.0f && vec.y == 0.0f) {
                 m_radians = 0.0f;
             } else {
-                m_radians = std::atan2(vec.y, vec.x);
+                if consteval {
+                    m_radians = constexpr_atan2(vec.y, vec.x);
+                } else {
+                    m_radians = std::atan2(vec.y, vec.x);
+                }
             }
         }
     };
