@@ -86,7 +86,7 @@ namespace internal {
  */
 template <typename T>
 requires std::is_floating_point_v<T>
-constexpr T constexpr_atan2(T y, T x) {
+constexpr T constexpr_atan2(T y, T x) noexcept {
 
         // Special case handling
         if (x == 0) {

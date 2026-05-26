@@ -6,7 +6,7 @@ import :Vector4;
 
 namespace math::factory {
 
-    export [[nodiscard]] constexpr Matrix4 Identity() {
+    export [[nodiscard]] constexpr Matrix4 Identity() noexcept {
         return {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -15,7 +15,7 @@ namespace math::factory {
         };
     }
 
-    export [[nodiscard]] constexpr Matrix4 Translate(const Vector3f& offset) {
+    export [[nodiscard]] constexpr Matrix4 Translate(const Vector3f& offset) noexcept {
         Matrix4 result = Identity();
         result[3][0] = offset.x;
         result[3][1] = offset.y;
@@ -23,7 +23,7 @@ namespace math::factory {
         return result;
     }
 
-    export [[nodiscard]] constexpr Matrix4 Scale(const Vector3f& scale) {
+    export [[nodiscard]] constexpr Matrix4 Scale(const Vector3f& scale) noexcept {
         Matrix4 result = Identity();
         result[0][0] = scale.x;
         result[1][1] = scale.y;

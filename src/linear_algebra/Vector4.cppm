@@ -12,15 +12,15 @@ namespace math {
     struct Vector4 {
         T x, y, z, w;
 
-        constexpr Vector4(const T x,const T y,const T z, const T w) : x(x), y(y), z(z), w(w) {}
-        constexpr explicit Vector4(const std::array<T, 4> array): x(array[0]), y(array[1]), z(array[2]), w(array[3]) {}
+        constexpr Vector4(const T x,const T y,const T z, const T w) noexcept : x(x), y(y), z(z), w(w) {}
+        constexpr explicit Vector4(const std::array<T, 4> array) noexcept : x(array[0]), y(array[1]), z(array[2]), w(array[3]) {}
 
-        constexpr std::array<T, 4> to_array() const {
+        constexpr std::array<T, 4> to_array() const noexcept {
             return {x, y, z, w};
         }
 
         template <typename U>
-        constexpr Vector4& operator=(const std::array<U, 4>& rhs) {
+        constexpr Vector4& operator=(const std::array<U, 4>& rhs) noexcept {
             this->x = static_cast<T>( rhs[0] );
             this->y = static_cast<T>( rhs[1] );
             this->z = static_cast<T>( rhs[2] );
@@ -29,7 +29,7 @@ namespace math {
         }
 
         template <typename U>
-        constexpr Vector4& operator=(const Vector4<U>& rhs) {
+        constexpr Vector4& operator=(const Vector4<U>& rhs) noexcept {
             this->x = static_cast<T>( rhs.x );
             this->y = static_cast<T>( rhs.y );
             this->z = static_cast<T>( rhs.z );
@@ -39,7 +39,7 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr Vector4& operator+=(const Vector4<U> &rhs) {
+        constexpr Vector4& operator+=(const Vector4<U> &rhs) noexcept {
             this->x = static_cast<T>( this->x + rhs.x );
             this->y = static_cast<T>( this->y + rhs.y );
             this->z = static_cast<T>( this->z + rhs.z );
@@ -49,7 +49,7 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr Vector4& operator*=(const Vector4<U>& rhs) {
+        constexpr Vector4& operator*=(const Vector4<U>& rhs) noexcept {
             this->x = static_cast<T>( this->x * rhs.x );
             this->y = static_cast<T>( this->y * rhs.y );
             this->z = static_cast<T>( this->z * rhs.z );
@@ -59,7 +59,7 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr Vector4& operator*=(const U rhs) {
+        constexpr Vector4& operator*=(const U rhs) noexcept {
             this->x = static_cast<T>( this->x * rhs );
             this->y = static_cast<T>( this->y * rhs );
             this->z = static_cast<T>( this->z * rhs );
@@ -69,7 +69,7 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr Vector4& operator-=(const Vector4<U>& rhs) {
+        constexpr Vector4& operator-=(const Vector4<U>& rhs) noexcept {
             this->x = static_cast<T>( this->x - rhs.x );
             this->y = static_cast<T>( this->y - rhs.y );
             this->z = static_cast<T>( this->z - rhs.z );
@@ -103,13 +103,13 @@ namespace math {
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr bool operator==(const Vector4<U> &rhs) const {
+        constexpr bool operator==(const Vector4<U> &rhs) const noexcept {
             return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z && this->w == rhs.w;
         }
 
         template<typename U>
         requires ArithmeticTypes<U, T>
-        constexpr bool operator!=(const Vector4<U> &rhs) const {
+        constexpr bool operator!=(const Vector4<U> &rhs) const noexcept {
             return this->x != rhs.x || this->y != rhs.y || this->z != rhs.z || this->w != rhs.w;
         }
 
@@ -126,7 +126,7 @@ namespace math {
     export
     template<typename T,typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto operator+(const Vector4<T>& lhs, const Vector4<U>& rhs) {
+    constexpr auto operator+(const Vector4<T>& lhs, const Vector4<U>& rhs) noexcept {
         return Vector4<decltype(std::declval<T>() + std::declval<U>())>(
             lhs.x + rhs.x,
             lhs.y + rhs.y,
@@ -138,7 +138,7 @@ namespace math {
     export
     template<typename T,typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto operator*(const Vector4<T>& lhs, const Vector4<U>& rhs) {
+    constexpr auto operator*(const Vector4<T>& lhs, const Vector4<U>& rhs) noexcept {
         return Vector4<decltype(std::declval<T>() * std::declval<U>())>(
             lhs.x * rhs.x,
             lhs.y * rhs.y,
@@ -150,7 +150,7 @@ namespace math {
     export
     template<typename T,typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto operator*(const Vector4<T>& lhs, const U rhs) {
+    constexpr auto operator*(const Vector4<T>& lhs, const U rhs) noexcept {
         return Vector4<decltype(std::declval<T>() * std::declval<U>())>(
             lhs.x * rhs,
             lhs.y * rhs,
@@ -163,7 +163,7 @@ namespace math {
     export
     template<typename T,typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto operator-(const Vector4<T>& lhs, const Vector4<U>& rhs) {
+    constexpr auto operator-(const Vector4<T>& lhs, const Vector4<U>& rhs) noexcept {
         return Vector4<decltype(std::declval<T>() - std::declval<U>())>(
             lhs.x - rhs.x,
             lhs.y - rhs.y,
@@ -174,7 +174,7 @@ namespace math {
 
     export
     template<typename T>
-    constexpr auto operator-(const Vector4<T>& lhs) {
+    constexpr auto operator-(const Vector4<T>& lhs) noexcept {
         return Vector4<decltype(-std::declval<T>())>(
             -lhs.x,
             -lhs.y,
@@ -217,7 +217,7 @@ namespace math {
     export
     template<typename T, typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto dot(const Vector4<T>& lhs, const Vector4<U>& rhs) -> PrecisionResult<T, U> {
+    constexpr auto dot(const Vector4<T>& lhs, const Vector4<U>& rhs) noexcept -> PrecisionResult<T, U> {
         using ReturnType = PrecisionResult<T, U>;
         return static_cast<ReturnType>(lhs.x) * static_cast<ReturnType>(rhs.x) +
                static_cast<ReturnType>(lhs.y) * static_cast<ReturnType>(rhs.y) +
@@ -228,7 +228,7 @@ namespace math {
     export
     template<typename T>
     requires ArithmeticTypes<T>
-    constexpr Vector4<T> normalize(const Vector4<T>& vec) {
+    constexpr Vector4<T> normalize(const Vector4<T>& vec) noexcept {
         if (vec.x == static_cast<T>(0) && vec.y == static_cast<T>(0) && vec.z == static_cast<T>(0) && vec.w == static_cast<T>(0)) {
             return vec;
         }

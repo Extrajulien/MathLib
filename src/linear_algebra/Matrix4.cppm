@@ -16,11 +16,11 @@ namespace math {
      * The type is 64-byte aligned to support efficient SIMD-friendly storage.
      */
     export struct alignas(64) Matrix4 {
-        friend constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs);
-        friend constexpr Matrix4 operator-(Matrix4 const& lhs);
-        friend constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs);
-        friend constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs);
-        friend constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar);
+        friend constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs) noexcept;
+        friend constexpr Matrix4 operator-(Matrix4 const& lhs) noexcept;
+        friend constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs) noexcept;
+        friend constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs) noexcept;
+        friend constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar) noexcept;
         friend constexpr Matrix4 operator/(Matrix4 const& lhs,float const& scalar);
     private:
         struct alignas(16) Column {
@@ -31,7 +31,7 @@ namespace math {
              * @param row The row index (0-3).
              * @return A reference to the specified float.
              */
-            constexpr float& operator[](const std::size_t row) {
+            constexpr float& operator[](const std::size_t row) noexcept {
                 return rowEntry[row];
             }
 
@@ -40,7 +40,7 @@ namespace math {
              * @param row The row index (0-3).
              * @return A const reference to the specified float.
              */
-            constexpr const float& operator[](const std::size_t row) const {
+            constexpr const float& operator[](const std::size_t row) const noexcept {
                 return rowEntry[row];
             }
         };
@@ -52,7 +52,7 @@ namespace math {
         constexpr Matrix4(const float n00, const float n01, const float n02, const float n03,
             const float n10, const float n11, const float n12, const float n13,
             const float n20, const float n21, const float n22, const float n23,
-            const float n30, const float n31, const float n32, const float n33) : matrix({
+            const float n30, const float n31, const float n32, const float n33) noexcept : matrix({
                 std::array<float, 4>({n00, n10, n20, n30}),
                 std::array<float, 4>({n01, n11, n21, n31}),
                 std::array<float, 4>({n02, n12, n22, n32}),
@@ -63,7 +63,7 @@ namespace math {
          * @brief Constructs a matrix from a flat 16-element row-major array.
          * @param array A 16-element array containing matrix values in row-major order.
          */
-        constexpr Matrix4(const std::array<float, 16>& array) : matrix({
+        constexpr Matrix4(const std::array<float, 16>& array) noexcept : matrix({
             {array[0], array[4], array[8],  array[12]},
             {array[1], array[5], array[9],  array[13]},
             {array[2], array[6], array[10], array[14]},
@@ -75,7 +75,7 @@ namespace math {
          * @param col The column index (0-3).
          * @return A reference to the specified column.
          */
-        constexpr Column& operator[](const size_t col) {
+        constexpr Column& operator[](const size_t col) noexcept {
             return matrix[col];
         }
         /**
@@ -83,7 +83,7 @@ namespace math {
          * @param col The column index (0-3).
          * @return A const reference to the specified column.
          */
-        constexpr const Column& operator[](const size_t col) const {
+        constexpr const Column& operator[](const size_t col) const noexcept {
             return matrix[col];
         }
 
@@ -92,7 +92,7 @@ namespace math {
          * @brief Adds another matrix to this matrix.
          * @return A reference to this matrix.
          */
-        constexpr Matrix4& operator+=(Matrix4 const& other) {
+        constexpr Matrix4& operator+=(Matrix4 const& other) noexcept {
             *this = *this + other;
             return *this;
         }
@@ -101,7 +101,7 @@ namespace math {
          * @brief Subtracts another matrix from this matrix.
          * @return A reference to this matrix.
          */
-        constexpr Matrix4& operator-=(Matrix4 const& other) {
+        constexpr Matrix4& operator-=(Matrix4 const& other) noexcept {
             *this = *this - other;
             return *this;
         }
@@ -110,7 +110,7 @@ namespace math {
          * @brief Multiplies this matrix by another matrix.
          * @return A reference to this matrix.
          */
-        constexpr Matrix4& operator*=(const Matrix4 &other) {
+        constexpr Matrix4& operator*=(const Matrix4 &other) noexcept {
             *this = *this * other;
             return *this;
         }
@@ -119,7 +119,7 @@ namespace math {
          * @brief Multiplies this matrix by a scalar.
          * @return A reference to this matrix.
          */
-        constexpr Matrix4& operator*=(float const& scalar) {
+        constexpr Matrix4& operator*=(float const& scalar) noexcept {
             *this = *this * scalar;
             return *this;
         }
@@ -139,7 +139,7 @@ namespace math {
          *  making it inadequate to use in column-major graphics APIs.
          * @return A contiguous 16-element <code>std::array<float, 16></code>.
          */
-        [[nodiscard]] constexpr std::array<float, 16> toArray() const {
+        [[nodiscard]] constexpr std::array<float, 16> toArray() const noexcept {
             return {
                 matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
                 matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
@@ -156,14 +156,14 @@ namespace math {
          * It becomes a dangling pointer if the matrix instance is destroyed.
          * @return A <code>const float*</code> pointing to the first element of the contiguous 16-float array.
          */
-        [[nodiscard]] const float* toPtr() const {
+        [[nodiscard]] const float* toPtr() const noexcept {
             return matrix[0].rowEntry.data();
         }
 
         /**
          * @brief Checks if two matrices are equal.
          */
-        constexpr bool operator==(const Matrix4& rhs) const {
+        constexpr bool operator==(const Matrix4& rhs) const noexcept {
             return matrix[0][0] == rhs[0][0] && matrix[0][1] == rhs[0][1]
             && matrix[0][2] == rhs[0][2] && matrix[0][3] == rhs[0][3]
             && matrix[1][0] == rhs[1][0] && matrix[1][1] == rhs[1][1]
@@ -177,7 +177,7 @@ namespace math {
         /**
          * @brief Checks if two matrices are not equal.
          */
-        constexpr bool operator!=(const Matrix4& rhs) const {
+        constexpr bool operator!=(const Matrix4& rhs) const noexcept {
             return !(*this == rhs);
         }
 
@@ -185,7 +185,7 @@ namespace math {
          * @brief Assigns another matrix to this matrix.
          * @return A reference to this matrix.
          */
-        constexpr Matrix4& operator= (const Matrix4 &other) {
+        constexpr Matrix4& operator= (const Matrix4 &other) noexcept {
             matrix[0][0] = other[0][0];
             matrix[0][1] = other[0][1];
             matrix[0][2] = other[0][2];
@@ -215,7 +215,7 @@ namespace math {
     /**
      * @brief Performs component-wise addition of two matrices.
      */
-    export constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs) {
+    export constexpr Matrix4 operator+(Matrix4 const& lhs,Matrix4 const& rhs) noexcept {
         return {
             lhs[0][0]+rhs[0][0],lhs[1][0]+rhs[1][0],lhs[2][0]+rhs[2][0],lhs[3][0]+rhs[3][0],
             lhs[0][1]+rhs[0][1],lhs[1][1]+rhs[1][1],lhs[2][1]+rhs[2][1],lhs[3][1]+rhs[3][1],
@@ -227,7 +227,7 @@ namespace math {
     /**
      * @brief Performs component-wise subtraction of two matrices.
      */
-    export constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs) {
+    export constexpr Matrix4 operator-(Matrix4 const& lhs,Matrix4 const& rhs) noexcept {
     	return {
     	    lhs[0][0]-rhs[0][0],lhs[1][0]-rhs[1][0],lhs[2][0]-rhs[2][0],lhs[3][0]-rhs[3][0],
     	    lhs[0][1]-rhs[0][1],lhs[1][1]-rhs[1][1],lhs[2][1]-rhs[2][1],lhs[3][1]-rhs[3][1],
@@ -238,7 +238,7 @@ namespace math {
     /**
      * @brief Negates all components of the matrix.
      */
-    export constexpr Matrix4 operator-(Matrix4 const& lhs) {
+    export constexpr Matrix4 operator-(Matrix4 const& lhs) noexcept {
         return {
             -lhs[0][0],-lhs[1][0],-lhs[2][0],-lhs[3][0],
             -lhs[0][1],-lhs[1][1],-lhs[2][1],-lhs[3][1],
@@ -250,7 +250,7 @@ namespace math {
     /**
      * @brief Performs matrix multiplication.
      */
-    export constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs) {
+    export constexpr Matrix4 operator*(Matrix4 const& lhs,Matrix4 const& rhs) noexcept {
         return {
             lhs[0][0]*rhs[0][0]+lhs[1][0]*rhs[0][1]+lhs[2][0]*rhs[0][2]+lhs[3][0]*rhs[0][3],
             lhs[0][0]*rhs[1][0]+lhs[1][0]*rhs[1][1]+lhs[2][0]*rhs[1][2]+lhs[3][0]*rhs[1][3],
@@ -277,7 +277,7 @@ namespace math {
     /**
      * @brief Multiplies a matrix by a scalar.
      */
-    export constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar) {
+    export constexpr Matrix4 operator*(Matrix4 const& lhs,float const& scalar) noexcept {
         return {
             lhs[0][0]*scalar, lhs[1][0]*scalar, lhs[2][0]*scalar, lhs[3][0]*scalar,
             lhs[0][1]*scalar, lhs[1][1]*scalar, lhs[2][1]*scalar, lhs[3][1]*scalar,
