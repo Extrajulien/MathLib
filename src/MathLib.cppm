@@ -6,3 +6,4 @@ export module MathLib;
 export import :Vector2;
 export import :Vector3;
 export import :Vector4;
+export import :Matrix4;
