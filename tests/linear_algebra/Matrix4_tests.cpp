@@ -95,12 +95,12 @@ TEST_CASE("Matrix4 Conversion and Assignment") {
             13, 14, 15, 16
         );
         auto arr = m.toArray();
-        // toArray() returns column-major array
+        // toArray() returns row-major array
         std::array<float, 16> expected = {
-            1, 5, 9, 13,
-            2, 6, 10, 14,
-            3, 7, 11, 15,
-            4, 8, 12, 16
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 10, 11, 12,
+            13, 14, 15, 16
         };
         CHECK(arr == expected);
     }
