@@ -7,6 +7,7 @@ target_sources(${TEST_TARGET_NAME}
         linear_algebra/Vector3_tests.cpp
         linear_algebra/Vector4_tests.cpp
         linear_algebra/Matrix4_tests.cpp
+        linear_algebra/Factory_tests.cpp
         trigonometry/Angle_tests.cpp
 )
 
