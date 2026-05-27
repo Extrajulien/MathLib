@@ -36,10 +36,13 @@ constexpr T constexpr_sqrt(T x) {
 namespace internal {
 
     template <typename T>
-    constexpr T pi = T(3.141592653589793238462643383279502884L);
+    inline constexpr T pi = T(3.141592653589793238462643383279502884L);
 
     template <typename T>
-    constexpr T pi_2 = pi<T> / 2;
+    inline constexpr T pi_2 = pi<T> / T(2);
+
+    template <typename T>
+    inline constexpr T pi_4 = pi<T> / T(4);
 
     /**
      * Highly accurate minimax polynomial approximation for arctan(x) over [-1, 1]
@@ -74,6 +77,21 @@ namespace internal {
         }
         return constexpr_atan_precise(x);
     }
+
+    /**
+     * Internal high-precision Padé approximant for tan(x) optimized for [-pi/4, pi/4]
+     */
+    template <typename T>
+    constexpr T constexpr_tan_base(T x) noexcept {
+        T x2 = x * x;
+
+        // High-accuracy Padé approximant coefficients [3/3]
+        // Extremely stable and accurate near zero and up to pi/4
+        T numerator = x * (T(105) - T(10) * x2);
+        T denominator = T(105) - T(45) * x2 + x2 * x2;
+
+        return numerator / denominator;
+    }
 }
 
 
@@ -84,7 +102,7 @@ namespace internal {
  * @param x abscissa value
  * @return principal value of the arc tangent of y/x
  */
-template <typename T>
+template <typename T = float>
 requires std::is_floating_point_v<T>
 constexpr T constexpr_atan2(T y, T x) noexcept {
 
@@ -107,4 +125,40 @@ constexpr T constexpr_atan2(T y, T x) noexcept {
             }
         }
         return angle;
+}
+
+/**
+ * constant expression tangent for MathLib
+ * @tparam T floating-point numeric type
+ * @param r angle value in rad
+ * @return tangent of the angle
+ */
+template <typename T = float>
+requires std::is_floating_point_v<T>
+[[nodiscard]] constexpr T constexpr_tan(T r) noexcept {
+    // 1. modulo the angle to [0, 2pi[
+    T double_pi = internal::pi<T> * T(2);
+    auto quotients = static_cast<long long>(r / double_pi);
+    r -= (quotients * double_pi);
+
+    if (r > internal::pi<T>)  r -= double_pi;
+    if (r < -internal::pi<T>) r += double_pi;
+
+    // 2. Reduce to [-pi/2, pi/2] using tangent symmetry: tan(x + pi) = tan(x)
+    if (r > internal::pi_2<T>) {
+        r -= internal::pi<T>;
+    } else if (r < -internal::pi_2<T>) {
+        r += internal::pi<T>;
+    }
+
+    // 3. Close Range Reduction to [-pi/4, pi/4] using identity: tan(x) = cot(pi/2 - x)
+    if (r > internal::pi_4<T>) {
+        T base = internal::constexpr_tan_base(internal::pi_2<T> - r);
+        return (base == T(0)) ? T(0) : T(1) / base; // Prevent division by zero
+    }
+    if (r < -internal::pi_4<T>) {
+        T base = internal::constexpr_tan_base(-internal::pi_2<T> - r);
+        return (base == T(0)) ? T(0) : T(1) / base;
+    }
+    return internal::constexpr_tan_base(r);
 }
