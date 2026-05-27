@@ -2,6 +2,7 @@ module;
 
 #include <cmath>
 #include <numbers>
+#include <stdexcept>
 
 export module MathLib:Angle;
 import :Vector2;
@@ -49,4 +50,17 @@ namespace math {
             }
         }
     };
+
+    export constexpr Angle operator*(const Angle angle, const float rhs) noexcept {
+        return {
+            angle.asRadians() * rhs
+        };
+    }
+
+    export constexpr Angle operator/(const Angle angle, const float rhs) {
+        if (rhs == 0) [[unlikely]] { throw std::invalid_argument("cannot divide Angle components by 0."); }
+        return {
+            angle.asRadians() / rhs
+        };
+    }
 }
