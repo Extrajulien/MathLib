@@ -10,7 +10,7 @@ include(CheckIPOSupported)
 add_library(${PROJECT_NAME} STATIC)
 add_subdirectory(src)
 
-option(BUILD_TESTING "Build the test suite" ON)
+option(BUILD_TESTING "Build the test suite" OFF)
 
 if(BUILD_TESTING)
     enable_testing()
