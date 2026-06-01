@@ -1,4 +1,21 @@
-## [1.0.0]
+## [2.0.0] - 2026-05-31
+
+### 🚜 Refactor
+
+- Change library namespace from `math` to `MathLib`
+
+### 📚 Documentation
+
+- Add README with features, usage, and build instructions
+- Update README for v2.0.0 release with new features and usage instructions
+
+### ⚙️ Miscellaneous Tasks
+- Update changelog for v1.0.0
+- Disable testing by default in CMake
+- Conditionally enable testing in CMake when MathLib is the main project
+- Rename test target to MathLib_Tests in CMake configuration
+- Update changelog for v2.0.0
+## [1.0.0] - 2026-05-27
 
 ### 🚀 Features
 
