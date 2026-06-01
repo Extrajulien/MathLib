@@ -1,12 +1,12 @@
 # MathLib
 
 [![C++26](https://img.shields.io/badge/C%2B%2B-26-blue.svg)](https://en.cppreference.com/w/cpp/26)
-[![Release](https://img.shields.io/badge/release-1.0.0-brightgreen.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-2.0.0-brightgreen.svg)](CHANGELOG.md)
 [![CMake](https://img.shields.io/badge/CMake-3.30%2B-064F8C.svg?logo=cmake)](https://cmake.org/)
 
 A modern, lightweight C++26 math library built around **named modules** with **near-full `constexpr` support**, designed for use in graphics, simulation, games, and any project that needs fast and expressive math primitives.
 
-> 🎉 **Version 1.0.0** is out! See the [Changelog](CHANGELOG.md) for the full release notes.
+> 🎉 **Version 2.0.0** is out! See the [Changelog](CHANGELOG.md) for the full release notes.
 
 ---
 
@@ -21,9 +21,9 @@ A modern, lightweight C++26 math library built around **named modules** with **n
     - `LinearFactory` for building common linear-algebra objects
 - 📐 **Trigonometry**
     - `Angle` struct for safe, unit-aware trigonometric calculations
-    - Arithmetic operators with safe handling of division by zero
+    - Arithmetic operators with safe handling of division by zero (exceptions)
     - `constexpr` tangent and rotation utilities
-- 🧪 **Thoroughly tested** — every public API is covered by unit tests (doctest).
+- 🧪 **Thoroughly tested** — near all operations are covered by unit tests (doctest).
 
 ---
 
@@ -46,48 +46,68 @@ cmake --build build
 
 ### Build options
 
-| Option           | Default | Description                  |
-|------------------|---------|------------------------------|
-| `BUILD_TESTING`  | `ON`    | Build the unit test suite    |
+| Option                  | Default | Description               |
+|-------------------------|---------|---------------------------|
+| `MATHLIB_BUILD_TESTING` | `OFF`   | Build the unit test suite |
 
-To build **without** tests:
+To build **with** tests:
 
 ```bash
-cmake -S . -B build -G Ninja -DBUILD_TESTING=OFF
+# ensure you are using a compiler who supports C++ modules (e.g. clang-18)
+cmake -S . -B build -G Ninja -DMATHLIB_BUILD_TESTING=ON \
+  -DCMAKE_CXX_COMPILER=clang++-18
 ```
 
 ### Running the tests
 
 ```bash
-cmake --build build --target Tests
-ctest --test-dir build
+cmake --build build --target MathLib_Tests
+ctest -V --test-dir build
 ```
 
 ---
 
-## 🚀 Usage
+## 🏋️ Usage
 
 MathLib exposes a single top-level module: `MathLib`. Importing it gives you access to every submodule.
+*All MathLib related code is within a `MathLib` namespace.*
 
 ```cpp
+#include <iostream>
 import MathLib;
+using namespace MathLib;
 
 int main() {
     constexpr Vector3 a{1.0f, 2.0f, 3.0f};
     constexpr Vector3 b{4.0f, 5.0f, 6.0f};
     constexpr auto sum = a + b;  // computed at compile time
-
+    std::cout << "sum = " << sum << std::endl;
+    
     constexpr Angle theta = Angle::fromDegrees(45.0f);
-    constexpr auto rotation = LinearFactory::rotationMatrix(theta);
-
+    auto rotation = factory::RotationX(theta);
+    std::cout << "rotation[1][1] = " << rotation[1][1] << std::endl;
     return 0;
 }
+```
+> sum = (5, 7, 9)<br>
+> rotation[1][1] = 0.707107
+### Installation via CMake FetchContent
+
+To pull `MathLib` into your project, add the following to your `CMakeLists.txt`:
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    MathLib
+    GIT_REPOSITORY https://github.com/Extrajulien/MathLib.git
+    GIT_TAG        v2.0.0 # or the tag of your choice
+)
+FetchContent_MakeAvailable(MathLib)
 ```
 
 ### Linking with CMake
 
 ```cmake
-add_subdirectory(MathLib)
 target_link_libraries(your_target PRIVATE MathLib)
 ```
 
@@ -102,14 +122,14 @@ set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
 ## 📚 Module Overview
 
-| Module                    | Contents                                                |
-|---------------------------|---------------------------------------------------------|
-| `MathLib:Vector2`         | 2D vector type and operations                           |
-| `MathLib:Vector3`         | 3D vector type and operations                           |
-| `MathLib:Vector4`         | 4D vector type and operations                           |
-| `MathLib:Matrix4`         | 4×4 matrix type, row-major export, and operations       |
-| `MathLib:LinearFactory`   | Factory helpers for linear algebra constructs           |
-| `MathLib:Angle`           | Angle abstraction with safe trigonometric operations    |
+| Module                  | Contents                                                |
+|-------------------------|---------------------------------------------------------|
+| `MathLib:Vector2<>`     | 2D vector type and operations                           |
+| `MathLib:Vector3<>`     | 3D vector type and operations                           |
+| `MathLib:Vector4<>`     | 4D vector type and operations                           |
+| `MathLib:Matrix4`       | 4×4 matrix type, row-major export, and operations       |
+| `MathLib:LinearFactory` | Factory helpers for linear algebra constructs           |
+| `MathLib:Angle`         | Angle abstraction with safe trigonometric operations    |
 
 You can also `import MathLib;` to get everything at once.
 
