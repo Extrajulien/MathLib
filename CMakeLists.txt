@@ -10,9 +10,14 @@ include(CheckIPOSupported)
 add_library(${PROJECT_NAME} STATIC)
 add_subdirectory(src)
 
-option(BUILD_TESTING "Build the test suite" OFF)
+# if MathLib is the main project build the tests
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    option(MATHLIB_BUILD_TESTING "Build MathLib test suite" ON)
+else()
+    option(MATHLIB_BUILD_TESTING "Build MathLib test suite" OFF)
+endif()
 
-if(BUILD_TESTING)
+if(MATHLIB_BUILD_TESTING)
     enable_testing()
     add_executable(${TEST_TARGET_NAME})
     add_subdirectory(tests)
