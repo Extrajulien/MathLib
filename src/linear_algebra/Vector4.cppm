@@ -6,7 +6,7 @@ module;
 export module MathLib:Vector4;
 import :internal;
 
-namespace math {
+namespace MathLib {
     export
     template<typename T = float>
     struct Vector4 {

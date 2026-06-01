@@ -3,9 +3,9 @@
 
 import MathLib;
 
-using math::Matrix4;
-using math::Vector3f;
-using math::Angle;
+using MathLib::Matrix4;
+using MathLib::Vector3f;
+using MathLib::Angle;
 
 namespace {
     void check_matrix4(const Matrix4& actual, const float expected[16]) {
@@ -18,7 +18,7 @@ namespace {
 }
 
 TEST_CASE("math::factory::Identity") {
-    auto m = math::factory::Identity();
+    auto m = MathLib::factory::Identity();
     float expected[] = {
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -29,7 +29,7 @@ TEST_CASE("math::factory::Identity") {
 }
 
 TEST_CASE("math::factory::Translate") {
-    auto m = math::factory::Translate(Vector3f(10, -5, 2.5f));
+    auto m = MathLib::factory::Translate(Vector3f(10, -5, 2.5f));
     float expected[] = {
         1, 0, 0, 10,
         0, 1, 0, -5,
@@ -40,7 +40,7 @@ TEST_CASE("math::factory::Translate") {
 }
 
 TEST_CASE("math::factory::Scale") {
-    auto m = math::factory::Scale(Vector3f(2, 0.5f, 10));
+    auto m = MathLib::factory::Scale(Vector3f(2, 0.5f, 10));
     float expected[] = {
         2, 0,    0,  0,
         0, 0.5f, 0,  0,
@@ -52,7 +52,7 @@ TEST_CASE("math::factory::Scale") {
 
 TEST_CASE("math::factory::RotationX") {
     SUBCASE("0 degrees produces identity") {
-        auto m = math::factory::RotationX(Angle::fromDegrees(0.0f));
+        auto m = MathLib::factory::RotationX(Angle::fromDegrees(0.0f));
         float expected[] = {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -63,7 +63,7 @@ TEST_CASE("math::factory::RotationX") {
     }
 
     SUBCASE("90 degrees") {
-        auto m = math::factory::RotationX(Angle::fromDegrees(90.0f));
+        auto m = MathLib::factory::RotationX(Angle::fromDegrees(90.0f));
         float expected[] = {
             1, 0,  0, 0,
             0, 0, -1, 0,
@@ -74,7 +74,7 @@ TEST_CASE("math::factory::RotationX") {
     }
 
     SUBCASE("180 degrees") {
-        auto m = math::factory::RotationX(Angle::fromDegrees(180.0f));
+        auto m = MathLib::factory::RotationX(Angle::fromDegrees(180.0f));
         float expected[] = {
             1, 0,  0, 0,
             0, -1, 0, 0,
@@ -85,7 +85,7 @@ TEST_CASE("math::factory::RotationX") {
     }
 
     SUBCASE("-90 degrees") {
-        auto m = math::factory::RotationX(Angle::fromDegrees(-90.0f));
+        auto m = MathLib::factory::RotationX(Angle::fromDegrees(-90.0f));
         float expected[] = {
             1, 0, 0, 0,
             0, 0, 1, 0,
@@ -97,7 +97,7 @@ TEST_CASE("math::factory::RotationX") {
 
     SUBCASE("30 degrees comparison with std::sin/cos") {
         float angle = 30.0f;
-        auto m = math::factory::RotationX(Angle::fromDegrees(angle));
+        auto m = MathLib::factory::RotationX(Angle::fromDegrees(angle));
         float rad = angle * (3.14159265f / 180.0f);
         float s = std::sin(rad);
         float c = std::cos(rad);
@@ -113,7 +113,7 @@ TEST_CASE("math::factory::RotationX") {
 
 TEST_CASE("math::factory::RotationY") {
     SUBCASE("0 degrees produces identity") {
-        auto m = math::factory::RotationY(Angle::fromDegrees(0.0f));
+        auto m = MathLib::factory::RotationY(Angle::fromDegrees(0.0f));
         float expected[] = {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -124,7 +124,7 @@ TEST_CASE("math::factory::RotationY") {
     }
 
     SUBCASE("90 degrees") {
-        auto m = math::factory::RotationY(Angle::fromDegrees(90.0f));
+        auto m = MathLib::factory::RotationY(Angle::fromDegrees(90.0f));
         float expected[] = {
              0, 0, 1, 0,
              0, 1, 0, 0,
@@ -135,7 +135,7 @@ TEST_CASE("math::factory::RotationY") {
     }
 
     SUBCASE("180 degrees") {
-        auto m = math::factory::RotationY(Angle::fromDegrees(180.0f));
+        auto m = MathLib::factory::RotationY(Angle::fromDegrees(180.0f));
         float expected[] = {
             -1, 0,  0, 0,
              0, 1,  0, 0,
@@ -147,7 +147,7 @@ TEST_CASE("math::factory::RotationY") {
 
     SUBCASE("30 degrees comparison with std::sin/cos") {
         float angle = 30.0f;
-        auto m = math::factory::RotationY(Angle::fromDegrees(angle));
+        auto m = MathLib::factory::RotationY(Angle::fromDegrees(angle));
         float rad = angle * (3.14159265f / 180.0f);
         float s = std::sin(rad);
         float c = std::cos(rad);
@@ -163,7 +163,7 @@ TEST_CASE("math::factory::RotationY") {
 
 TEST_CASE("math::factory::RotationZ") {
     SUBCASE("0 degrees produces identity") {
-        auto m = math::factory::RotationZ(Angle::fromDegrees(0.0f));
+        auto m = MathLib::factory::RotationZ(Angle::fromDegrees(0.0f));
         float expected[] = {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -174,7 +174,7 @@ TEST_CASE("math::factory::RotationZ") {
     }
 
     SUBCASE("90 degrees") {
-        auto m = math::factory::RotationZ(Angle::fromDegrees(90.0f));
+        auto m = MathLib::factory::RotationZ(Angle::fromDegrees(90.0f));
         float expected[] = {
             0, -1, 0, 0,
             1,  0, 0, 0,
@@ -185,7 +185,7 @@ TEST_CASE("math::factory::RotationZ") {
     }
 
     SUBCASE("180 degrees") {
-        auto m = math::factory::RotationZ(Angle::fromDegrees(180.0f));
+        auto m = MathLib::factory::RotationZ(Angle::fromDegrees(180.0f));
         float expected[] = {
             -1,  0, 0, 0,
              0, -1, 0, 0,
@@ -197,7 +197,7 @@ TEST_CASE("math::factory::RotationZ") {
 
     SUBCASE("30 degrees comparison with std::sin/cos") {
         float angle = 30.0f;
-        auto m = math::factory::RotationZ(Angle::fromDegrees(angle));
+        auto m = MathLib::factory::RotationZ(Angle::fromDegrees(angle));
         float rad = angle * (3.14159265f / 180.0f);
         float s = std::sin(rad);
         float c = std::cos(rad);
@@ -214,33 +214,33 @@ TEST_CASE("math::factory::RotationZ") {
 TEST_CASE("math::factory::RotationAxis") {
     SUBCASE("Axis (1,0,0) matches RotationX") {
         auto angle = Angle::fromDegrees(45.0f);
-        auto m_axis = math::factory::RotationAxis(angle, Vector3f(1, 0, 0));
-        auto m_x = math::factory::RotationX(angle);
+        auto m_axis = MathLib::factory::RotationAxis(angle, Vector3f(1, 0, 0));
+        auto m_x = MathLib::factory::RotationX(angle);
         CHECK(m_axis == m_x);
     }
 
     SUBCASE("Axis (0,1,0) matches RotationY") {
         auto angle = Angle::fromDegrees(45.0f);
-        auto m_axis = math::factory::RotationAxis(angle, Vector3f(0, 1, 0));
-        auto m_y = math::factory::RotationY(angle);
+        auto m_axis = MathLib::factory::RotationAxis(angle, Vector3f(0, 1, 0));
+        auto m_y = MathLib::factory::RotationY(angle);
         CHECK(m_axis == m_y);
     }
 
     SUBCASE("Axis (0,0,1) matches RotationZ") {
         auto angle = Angle::fromDegrees(45.0f);
-        auto m_axis = math::factory::RotationAxis(angle, Vector3f(0, 0, 1));
-        auto m_z = math::factory::RotationZ(angle);
+        auto m_axis = MathLib::factory::RotationAxis(angle, Vector3f(0, 0, 1));
+        auto m_z = MathLib::factory::RotationZ(angle);
         CHECK(m_axis == m_z);
     }
 
     SUBCASE("Non-normalized axes are normalized internally") {
         auto angle = Angle::fromDegrees(60.0f);
-        auto m1 = math::factory::RotationAxis(angle, Vector3f(2, 0, 0));
-        auto m_expected = math::factory::RotationX(angle);
+        auto m1 = MathLib::factory::RotationAxis(angle, Vector3f(2, 0, 0));
+        auto m_expected = MathLib::factory::RotationX(angle);
         CHECK(m1 == m_expected);
 
-        auto m2 = math::factory::RotationAxis(angle, Vector3f(0, -3, 0));
-        auto m_expected2 = math::factory::RotationY(Angle::fromDegrees(-60.0f));
+        auto m2 = MathLib::factory::RotationAxis(angle, Vector3f(0, -3, 0));
+        auto m_expected2 = MathLib::factory::RotationY(Angle::fromDegrees(-60.0f));
         CHECK(m2 == m_expected2);
     }
 
@@ -267,15 +267,15 @@ TEST_CASE("math::factory::RotationAxis") {
             0,                0,                0,                1
         };
         
-        auto m = math::factory::RotationAxis(angle, axis);
+        auto m = MathLib::factory::RotationAxis(angle, axis);
         check_matrix4(m, expected);
     }
 
     SUBCASE("Negative axis with positive angle equivalent to positive axis with negative angle") {
         auto angle = Angle::fromDegrees(30.0f);
         auto axis = Vector3f(1, 2, 3);
-        auto m1 = math::factory::RotationAxis(angle, -axis);
-        auto m2 = math::factory::RotationAxis(Angle::fromDegrees(-30.0f), axis);
+        auto m1 = MathLib::factory::RotationAxis(angle, -axis);
+        auto m2 = MathLib::factory::RotationAxis(Angle::fromDegrees(-30.0f), axis);
         
         for(int c=0; c<4; ++c)
             for(int r=0; r<4; ++r)
@@ -283,7 +283,7 @@ TEST_CASE("math::factory::RotationAxis") {
     }
 
     SUBCASE("0-degree arbitrary-axis rotation returns identity") {
-        auto m = math::factory::RotationAxis(Angle::fromDegrees(0.0f), Vector3f(1, 1, 1));
+        auto m = MathLib::factory::RotationAxis(Angle::fromDegrees(0.0f), Vector3f(1, 1, 1));
         float expected[] = {
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -295,7 +295,7 @@ TEST_CASE("math::factory::RotationAxis") {
 
     SUBCASE("180-degree arbitrary-axis rotation") {
         Vector3f axis(1, 0, 0); 
-        auto m = math::factory::RotationAxis(Angle::fromDegrees(180.0f), axis);
+        auto m = MathLib::factory::RotationAxis(Angle::fromDegrees(180.0f), axis);
         float expected[] = {
             1, 0,  0, 0,
             0, -1, 0, 0,
@@ -313,7 +313,7 @@ TEST_CASE("math::factory::Perspective") {
         float near = 0.1f;
         float far = 100.0f;
         
-        auto m = math::factory::Perspective(Angle::fromDegrees(fovX), aspect, near, far);
+        auto m = MathLib::factory::Perspective(Angle::fromDegrees(fovX), aspect, near, far);
         
         float tangent = std::tan(Angle::fromDegrees(fovX).asRadians() / 2.0f);
         float x_scale = 1.0f / tangent;
@@ -332,7 +332,7 @@ TEST_CASE("math::factory::Perspective") {
 
     SUBCASE("Multiple FOV/aspect/near/far combinations") {
         auto test_persp = [](float fov, float aspect, float near, float far) {
-            auto m = math::factory::Perspective(Angle::fromDegrees(fov), aspect, near, far);
+            auto m = MathLib::factory::Perspective(Angle::fromDegrees(fov), aspect, near, far);
             float tangent = std::tan(Angle::fromDegrees(fov).asRadians() / 2.0f);
             float x_scale = 1.0f / tangent;
             float y_scale = aspect / tangent;
@@ -352,7 +352,7 @@ TEST_CASE("math::factory::Perspective") {
     }
 
     SUBCASE("Structural properties") {
-        auto m = math::factory::Perspective(Angle::fromDegrees(90.0f), 1.0f, 0.1f, 100.0f);
+        auto m = MathLib::factory::Perspective(Angle::fromDegrees(90.0f), 1.0f, 0.1f, 100.0f);
         
         CHECK(m[1][0] == 0.0f);
         CHECK(m[2][0] == 0.0f);
@@ -369,7 +369,7 @@ TEST_CASE("math::factory::Perspective") {
         CHECK(m[2][3] == -1.0f);
         
         float aspect = 1.5f;
-        auto m2 = math::factory::Perspective(Angle::fromDegrees(60.0f), aspect, 0.1f, 100.0f);
+        auto m2 = MathLib::factory::Perspective(Angle::fromDegrees(60.0f), aspect, 0.1f, 100.0f);
         CHECK(m2[1][1] == doctest::Approx(m2[0][0] * aspect));
         
         CHECK(m[2][2] < 0.0f);
@@ -378,9 +378,9 @@ TEST_CASE("math::factory::Perspective") {
 }
 
 TEST_CASE("constexpr coverage") {
-    constexpr auto id = math::factory::Identity();
+    constexpr auto id = MathLib::factory::Identity();
     static_assert(id[0][0] == 1.0f);
     
-    constexpr auto p = math::factory::Perspective(Angle(1.0f), 1.0f, 0.1f, 100.0f);
+    constexpr auto p = MathLib::factory::Perspective(Angle(1.0f), 1.0f, 0.1f, 100.0f);
     static_assert(p[2][3] == -1.0f);
 }

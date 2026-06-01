@@ -9,10 +9,10 @@
 
 import MathLib;
 
-using math::Vector3;
-using math::Vector3i;
-using math::Vector3f;
-using math::Vector3d;
+using MathLib::Vector3;
+using MathLib::Vector3i;
+using MathLib::Vector3f;
+using MathLib::Vector3d;
 
 // Helper function for approximate vector comparison to avoid repeated boilerplate.
 template<typename T, typename U>
@@ -272,14 +272,14 @@ TEST_CASE("Vector3 Type Deductions") {
 
 TEST_CASE("Vector3 Dot Product") {
     SUBCASE("Standard cases") {
-        CHECK(math::dot(Vector3i(1, 2, 3), Vector3i(4, 5, 6)) == 32);
-        CHECK(math::dot(Vector3f(1.0f, 0.0f, 0.0f), Vector3f(0.0f, 1.0f, 0.0f)) == 0.0f); // Perpendicular
-        CHECK(math::dot(Vector3d(1.0, 1.0, 1.0), Vector3d(2.0, 2.0, 2.0)) == 6.0);     // Parallel
-        CHECK(math::dot(Vector3d(2.0, 3.0, 4.0), Vector3d(-1.0, -1.0, -1.0)) == -9.0);
+        CHECK(MathLib::dot(Vector3i(1, 2, 3), Vector3i(4, 5, 6)) == 32);
+        CHECK(MathLib::dot(Vector3f(1.0f, 0.0f, 0.0f), Vector3f(0.0f, 1.0f, 0.0f)) == 0.0f); // Perpendicular
+        CHECK(MathLib::dot(Vector3d(1.0, 1.0, 1.0), Vector3d(2.0, 2.0, 2.0)) == 6.0);     // Parallel
+        CHECK(MathLib::dot(Vector3d(2.0, 3.0, 4.0), Vector3d(-1.0, -1.0, -1.0)) == -9.0);
     }
 
     SUBCASE("Mixed types") {
-        auto d = math::dot(Vector3i(1, 2, 3), Vector3d(0.5, 2.0, 1.0));
+        auto d = MathLib::dot(Vector3i(1, 2, 3), Vector3d(0.5, 2.0, 1.0));
         CHECK(d == doctest::Approx(7.5));
     }
 }
@@ -290,17 +290,17 @@ TEST_CASE("Vector3 Cross Product") {
         auto y = Vector3i(0, 1, 0);
         auto z = Vector3i(0, 0, 1);
 
-        CHECK(math::cross(x, y) == z);
-        CHECK(math::cross(y, z) == x);
-        CHECK(math::cross(z, x) == y);
+        CHECK(MathLib::cross(x, y) == z);
+        CHECK(MathLib::cross(y, z) == x);
+        CHECK(MathLib::cross(z, x) == y);
 
-        CHECK(math::cross(y, x) == -z);
+        CHECK(MathLib::cross(y, x) == -z);
     }
 
     SUBCASE("Parallel vectors produce zero vector") {
         auto v1 = Vector3i(1, 2, 3);
         auto v2 = Vector3i(2, 4, 6);
-        auto res = math::cross(v1, v2);
+        auto res = MathLib::cross(v1, v2);
         CHECK(res.x == 0);
         CHECK(res.y == 0);
         CHECK(res.z == 0);
@@ -309,7 +309,7 @@ TEST_CASE("Vector3 Cross Product") {
     SUBCASE("General known-value case") {
         auto v1 = Vector3i(3, -3, 1);
         auto v2 = Vector3i(4, 9, 2);
-        auto res = math::cross(v1, v2);
+        auto res = MathLib::cross(v1, v2);
         // ( -3*2 - 1*9, 1*4 - 3*2, 3*9 - (-3)*4 )
         // ( -6 - 9, 4 - 6, 27 + 12 )
         // ( -15, -2, 39 )
@@ -321,7 +321,7 @@ TEST_CASE("Vector3 Cross Product") {
     SUBCASE("Mixed-type cross product") {
         auto v1 = Vector3i(1, 0, 0);
         auto v2 = Vector3f(0.0f, 1.0f, 0.0f);
-        auto res = math::cross(v1, v2);
+        auto res = MathLib::cross(v1, v2);
         static_assert(std::is_same_v<decltype(res), Vector3<float>>);
         CHECK(is_approx_equal(res, 0.0f, 0.0f, 1.0f));
     }
@@ -329,7 +329,7 @@ TEST_CASE("Vector3 Cross Product") {
     SUBCASE("Constexpr cross product") {
         constexpr Vector3i v1(1, 0, 0);
         constexpr Vector3i v2(0, 1, 0);
-        constexpr auto res = math::cross(v1, v2);
+        constexpr auto res = MathLib::cross(v1, v2);
         static_assert(res.x == 0);
         static_assert(res.y == 0);
         static_assert(res.z == 1);
@@ -339,32 +339,32 @@ TEST_CASE("Vector3 Cross Product") {
 TEST_CASE("Vector3 Normalization") {
     SUBCASE("Standard geometric vectors") {
         // (2, 3, 6) normalizes to (2/7, 3/7, 6/7) because length is sqrt(4+9+36) = sqrt(49) = 7
-        auto vec = math::normalize(Vector3f(2.0f, 3.0f, 6.0f));
+        auto vec = MathLib::normalize(Vector3f(2.0f, 3.0f, 6.0f));
         CHECK(is_approx_equal(vec, 2.0f/7.0f, 3.0f/7.0f, 6.0f/7.0f));
 
         // An axis-aligned vector should normalize to a pure unit vector
-        auto axis_v = math::normalize(Vector3d(5.5, 0.0, 0.0));
+        auto axis_v = MathLib::normalize(Vector3d(5.5, 0.0, 0.0));
         CHECK(is_approx_equal(axis_v, 1.0, 0.0, 0.0));
 
-        auto neg_v = math::normalize(Vector3f(0.0f, -3.0f, 0.0f));
+        auto neg_v = MathLib::normalize(Vector3f(0.0f, -3.0f, 0.0f));
         CHECK(is_approx_equal(neg_v, 0.0f, -1.0f, 0.0f));
     }
 
     SUBCASE("Resulting length should always approximate 1.0") {
-        auto v = math::normalize(Vector3f(12.34f, -56.78f, 9.01f));
+        auto v = MathLib::normalize(Vector3f(12.34f, -56.78f, 9.01f));
         float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
         CHECK(length == doctest::Approx(1.0f));
     }
 
     SUBCASE("Edge Case: Zero Vector") {
-        auto zero_v = math::normalize(Vector3f(0.0f, 0.0f, 0.0f));
+        auto zero_v = MathLib::normalize(Vector3f(0.0f, 0.0f, 0.0f));
         CHECK(zero_v.x == 0.0f);
         CHECK(zero_v.y == 0.0f);
         CHECK(zero_v.z == 0.0f);
     }
 
     SUBCASE("Edge Case: (0, 0, nonzero) - Potential bug check") {
-        auto z_v = math::normalize(Vector3f(0.0f, 0.0f, 5.0f));
+        auto z_v = MathLib::normalize(Vector3f(0.0f, 0.0f, 5.0f));
         CHECK(is_approx_equal(z_v, 0.0f, 0.0f, 1.0f));
     }
 }
@@ -421,12 +421,12 @@ TEST_CASE("Vector3 Constexpr and Static Assert") {
         static_assert(vec3.y == 7);
         static_assert(vec3.z == 9);
 
-        constexpr auto d = math::dot(vec1, vec2);
+        constexpr auto d = MathLib::dot(vec1, vec2);
         static_assert(d == 32);
     }
 
     SUBCASE("Constexpr normalization") {
-        constexpr auto v = math::normalize(Vector3d(1.0, 0.0, 0.0));
+        constexpr auto v = MathLib::normalize(Vector3d(1.0, 0.0, 0.0));
         static_assert(v.x == 1.0);
         static_assert(v.y == 0.0);
         static_assert(v.z == 0.0);

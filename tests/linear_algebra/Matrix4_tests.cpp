@@ -8,8 +8,8 @@
 
 import MathLib;
 
-using math::Matrix4;
-using math::Matrix4f;
+using MathLib::Matrix4;
+using MathLib::Matrix4f;
 
 // Helper function for approximate Matrix4 comparison
 bool is_approx_equal(const Matrix4& actual, const std::array<float, 16>& expected_col_major) {
@@ -112,7 +112,7 @@ TEST_CASE("Matrix4 Conversion and Assignment") {
             9, 10, 11, 12,
             13, 14, 15, 16
         );
-        Matrix4 m2 = math::factory::Identity();
+        Matrix4 m2 = MathLib::factory::Identity();
         m2 = m1;
         CHECK(m2 == m1);
         CHECK(m2[0][0] == 1.0f);
@@ -236,7 +236,7 @@ TEST_CASE("Matrix4 Arithmetic Operators") {
 
     SUBCASE("Matrix * Matrix") {
         // Identity * m1 = m1
-        Matrix4 identity = math::factory::Identity();
+        Matrix4 identity = MathLib::factory::Identity();
         Matrix4 res = identity * m1;
         CHECK(res == m1);
 
@@ -292,7 +292,7 @@ TEST_CASE("Matrix4 Compound Assignment") {
     }
 
     SUBCASE("operator*=") {
-        Matrix4 m = math::factory::Identity();
+        Matrix4 m = MathLib::factory::Identity();
         auto& ref = (m *= m1);
         CHECK(m == m1);
         CHECK(&ref == &m);
@@ -319,7 +319,7 @@ TEST_CASE("Matrix4 Type Deductions") {
 
 TEST_CASE("Matrix4 Matrix Operations") {
     SUBCASE("Identity") {
-        Matrix4 id = math::factory::Identity();
+        Matrix4 id = MathLib::factory::Identity();
         for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) {
                 if (i == j) CHECK(id[i][j] == 1.0f);
@@ -329,8 +329,8 @@ TEST_CASE("Matrix4 Matrix Operations") {
     }
 
     SUBCASE("Translate") {
-        math::Vector3f offset(10, 20, 30);
-        Matrix4 t = math::factory::Translate(offset);
+        MathLib::Vector3f offset(10, 20, 30);
+        Matrix4 t = MathLib::factory::Translate(offset);
         // Column-major: translation is in the last column
         CHECK(t[3][0] == 10.0f);
         CHECK(t[3][1] == 20.0f);
@@ -342,8 +342,8 @@ TEST_CASE("Matrix4 Matrix Operations") {
     }
 
     SUBCASE("Scale") {
-        math::Vector3f scale(2, 3, 4);
-        Matrix4 s = math::factory::Scale(scale);
+        MathLib::Vector3f scale(2, 3, 4);
+        Matrix4 s = MathLib::factory::Scale(scale);
         CHECK(s[0][0] == 2.0f);
         CHECK(s[1][1] == 3.0f);
         CHECK(s[2][2] == 4.0f);
@@ -352,7 +352,7 @@ TEST_CASE("Matrix4 Matrix Operations") {
 }
 
 TEST_CASE("Matrix4 Exceptions") {
-    Matrix4 m = math::factory::Identity();
+    Matrix4 m = MathLib::factory::Identity();
     CHECK_THROWS_AS(m / 0.0f, std::invalid_argument);
     CHECK_THROWS_AS(m /= 0.0f, std::invalid_argument);
 }
@@ -370,7 +370,7 @@ TEST_CASE("Matrix4 Constexpr and Static Assert") {
     }
 
     SUBCASE("Constexpr arithmetic") {
-        constexpr Matrix4 m1 = math::factory::Identity();
+        constexpr Matrix4 m1 = MathLib::factory::Identity();
         constexpr Matrix4 m2 = m1 + m1;
         static_assert(m2[0][0] == 2.0f);
         static_assert(m2[1][1] == 2.0f);

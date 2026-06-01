@@ -9,7 +9,7 @@ import :Vector4;
 import :Angle;
 import :internal;
 
-namespace math::factory {
+namespace MathLib::factory {
 
     export [[nodiscard]] constexpr Matrix4 Identity() noexcept {
         return {

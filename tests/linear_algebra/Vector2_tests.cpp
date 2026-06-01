@@ -8,10 +8,10 @@
 
 import MathLib;
 
-using math::Vector2;
-using math::Vector2i;
-using math::Vector2f;
-using math::Vector2d;
+using MathLib::Vector2;
+using MathLib::Vector2i;
+using MathLib::Vector2f;
+using MathLib::Vector2d;
 
 // Helper function for approximate vector comparison to avoid repeated boilerplate.
 template<typename T, typename U>
@@ -237,14 +237,14 @@ TEST_CASE("Vector2 Type Deductions") {
 
 TEST_CASE("Vector2 Dot Product") {
     SUBCASE("Standard cases") {
-        CHECK(math::dot(Vector2i(1, 2), Vector2i(3, 4)) == 11);
-        CHECK(math::dot(Vector2f(1.0f, 0.0f), Vector2f(0.0f, 1.0f)) == 0.0f); // Perpendicular
-        CHECK(math::dot(Vector2d(1.0, 1.0), Vector2d(2.0, 2.0)) == 4.0);     // Parallel
-        CHECK(math::dot(Vector2d(2.0, 3.0), Vector2d(-1.0, -1.0)) == -5.0);
+        CHECK(MathLib::dot(Vector2i(1, 2), Vector2i(3, 4)) == 11);
+        CHECK(MathLib::dot(Vector2f(1.0f, 0.0f), Vector2f(0.0f, 1.0f)) == 0.0f); // Perpendicular
+        CHECK(MathLib::dot(Vector2d(1.0, 1.0), Vector2d(2.0, 2.0)) == 4.0);     // Parallel
+        CHECK(MathLib::dot(Vector2d(2.0, 3.0), Vector2d(-1.0, -1.0)) == -5.0);
     }
 
     SUBCASE("Mixed types") {
-        auto d = math::dot(Vector2i(1, 2), Vector2d(0.5, 2.0));
+        auto d = MathLib::dot(Vector2i(1, 2), Vector2d(0.5, 2.0));
         CHECK(d == doctest::Approx(4.5));
     }
 }
@@ -252,25 +252,25 @@ TEST_CASE("Vector2 Dot Product") {
 TEST_CASE("Vector2 Normalization") {
     SUBCASE("Standard geometric vectors") {
         // A 3-4-5 triangle vector normalized should become (0.6, 0.8)
-        auto vec = math::normalize(Vector2f(3.0f, 4.0f));
+        auto vec = MathLib::normalize(Vector2f(3.0f, 4.0f));
         CHECK(is_approx_equal(vec, 0.6f, 0.8f));
 
         // An axis-aligned vector should normalize to a pure unit vector
-        auto axis_v = math::normalize(Vector2d(5.5, 0.0));
+        auto axis_v = MathLib::normalize(Vector2d(5.5, 0.0));
         CHECK(is_approx_equal(axis_v, 1.0, 0.0));
         
-        auto neg_v = math::normalize(Vector2f(-3.0f, 0.0f));
+        auto neg_v = MathLib::normalize(Vector2f(-3.0f, 0.0f));
         CHECK(is_approx_equal(neg_v, -1.0f, 0.0f));
     }
 
     SUBCASE("Resulting length should always approximate 1.0") {
-        auto v = math::normalize(Vector2f(12.34f, -56.78f));
+        auto v = MathLib::normalize(Vector2f(12.34f, -56.78f));
         float length = std::sqrt(v.x * v.x + v.y * v.y);
         CHECK(length == doctest::Approx(1.0f));
     }
 
     SUBCASE("Edge Case: Zero Vector") {
-        auto zero_v = math::normalize(Vector2f(0.0f, 0.0f));
+        auto zero_v = MathLib::normalize(Vector2f(0.0f, 0.0f));
         CHECK(zero_v.x == 0.0f);
         CHECK(zero_v.y == 0.0f);
     }
@@ -318,12 +318,12 @@ TEST_CASE("Vector2 Constexpr and Static Assert") {
         static_assert(vec3.x == 4);
         static_assert(vec3.y == 6);
 
-        constexpr auto d = math::dot(vec1, vec2);
+        constexpr auto d = MathLib::dot(vec1, vec2);
         static_assert(d == 11);
     }
 
     SUBCASE("Constexpr normalization") {
-        constexpr auto v = math::normalize(Vector2d(1.0, 0.0));
+        constexpr auto v = MathLib::normalize(Vector2d(1.0, 0.0));
         static_assert(v.x == 1.0);
         static_assert(v.y == 0.0);
     }

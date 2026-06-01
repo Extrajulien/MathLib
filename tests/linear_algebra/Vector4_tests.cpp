@@ -8,10 +8,10 @@
 
 import MathLib;
 
-using math::Vector4;
-using math::Vector4i;
-using math::Vector4f;
-using math::Vector4d;
+using MathLib::Vector4;
+using MathLib::Vector4i;
+using MathLib::Vector4f;
+using MathLib::Vector4d;
 
 // Helper function for approximate vector comparison to avoid repeated boilerplate.
 template<typename T, typename U>
@@ -316,14 +316,14 @@ TEST_CASE("Vector4 Type Deductions") {
 
 TEST_CASE("Vector4 Dot Product") {
     SUBCASE("Standard cases") {
-        CHECK(math::dot(Vector4i(1, 2, 3, 4), Vector4i(5, 6, 7, 8)) == 70); 
-        CHECK(math::dot(Vector4f(1.0f, 0.0f, 0.0f, 0.0f), Vector4f(0.0f, 1.0f, 0.0f, 0.0f)) == 0.0f); 
-        CHECK(math::dot(Vector4d(1.0, 1.0, 1.0, 1.0), Vector4d(2.0, 2.0, 2.0, 2.0)) == 8.0);     
-        CHECK(math::dot(Vector4d(2.0, 3.0, 4.0, 5.0), Vector4d(-1.0, -1.0, -1.0, -1.0)) == -14.0);
+        CHECK(MathLib::dot(Vector4i(1, 2, 3, 4), Vector4i(5, 6, 7, 8)) == 70);
+        CHECK(MathLib::dot(Vector4f(1.0f, 0.0f, 0.0f, 0.0f), Vector4f(0.0f, 1.0f, 0.0f, 0.0f)) == 0.0f);
+        CHECK(MathLib::dot(Vector4d(1.0, 1.0, 1.0, 1.0), Vector4d(2.0, 2.0, 2.0, 2.0)) == 8.0);
+        CHECK(MathLib::dot(Vector4d(2.0, 3.0, 4.0, 5.0), Vector4d(-1.0, -1.0, -1.0, -1.0)) == -14.0);
     }
 
     SUBCASE("Mixed types") {
-        auto d = math::dot(Vector4i(1, 2, 3, 4), Vector4d(0.5, 2.0, 1.0, 0.25));
+        auto d = MathLib::dot(Vector4i(1, 2, 3, 4), Vector4d(0.5, 2.0, 1.0, 0.25));
         CHECK(d == doctest::Approx(8.5));
     }
 }
@@ -331,27 +331,27 @@ TEST_CASE("Vector4 Dot Product") {
 TEST_CASE("Vector4 Normalization") {
     SUBCASE("Standard geometric vectors") {
         // (1, 2, 2, 4) has length sqrt(1 + 4 + 4 + 16) = sqrt(25) = 5
-        auto vec = math::normalize(Vector4f(1.0f, 2.0f, 2.0f, 4.0f));
+        auto vec = MathLib::normalize(Vector4f(1.0f, 2.0f, 2.0f, 4.0f));
         CHECK(is_approx_equal(vec, 1.0f/5.0f, 2.0f/5.0f, 2.0f/5.0f, 4.0f/5.0f));
 
         // Axis-aligned vectors
-        CHECK(is_approx_equal(math::normalize(Vector4d(5.0, 0.0, 0.0, 0.0)), 1.0, 0.0, 0.0, 0.0));
-        CHECK(is_approx_equal(math::normalize(Vector4d(0.0, 5.0, 0.0, 0.0)), 0.0, 1.0, 0.0, 0.0));
-        CHECK(is_approx_equal(math::normalize(Vector4d(0.0, 0.0, 5.0, 0.0)), 0.0, 0.0, 1.0, 0.0));
-        CHECK(is_approx_equal(math::normalize(Vector4d(0.0, 0.0, 0.0, 5.0)), 0.0, 0.0, 0.0, 1.0));
+        CHECK(is_approx_equal(MathLib::normalize(Vector4d(5.0, 0.0, 0.0, 0.0)), 1.0, 0.0, 0.0, 0.0));
+        CHECK(is_approx_equal(MathLib::normalize(Vector4d(0.0, 5.0, 0.0, 0.0)), 0.0, 1.0, 0.0, 0.0));
+        CHECK(is_approx_equal(MathLib::normalize(Vector4d(0.0, 0.0, 5.0, 0.0)), 0.0, 0.0, 1.0, 0.0));
+        CHECK(is_approx_equal(MathLib::normalize(Vector4d(0.0, 0.0, 0.0, 5.0)), 0.0, 0.0, 0.0, 1.0));
 
-        auto neg_v = math::normalize(Vector4f(0.0f, 0.0f, 0.0f, -3.0f));
+        auto neg_v = MathLib::normalize(Vector4f(0.0f, 0.0f, 0.0f, -3.0f));
         CHECK(is_approx_equal(neg_v, 0.0f, 0.0f, 0.0f, -1.0f));
     }
 
     SUBCASE("Resulting length should always approximate 1.0") {
-        auto v = math::normalize(Vector4f(1.0f, 2.0f, 3.0f, 4.0f));
+        auto v = MathLib::normalize(Vector4f(1.0f, 2.0f, 3.0f, 4.0f));
         float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
         CHECK(length == doctest::Approx(1.0f));
     }
 
     SUBCASE("Edge Case: Zero Vector") {
-        auto zero_v = math::normalize(Vector4f(0.0f, 0.0f, 0.0f, 0.0f));
+        auto zero_v = MathLib::normalize(Vector4f(0.0f, 0.0f, 0.0f, 0.0f));
         CHECK(zero_v.x == 0.0f);
         CHECK(zero_v.y == 0.0f);
         CHECK(zero_v.z == 0.0f);
@@ -444,12 +444,12 @@ TEST_CASE("Vector4 Constexpr and Static Assert") {
         static_assert(neg.z == -3);
         static_assert(neg.w == -4);
 
-        constexpr auto d = math::dot(vec1, vec2);
+        constexpr auto d = MathLib::dot(vec1, vec2);
         static_assert(d == 70);
     }
 
     SUBCASE("Constexpr normalization") {
-        constexpr auto v = math::normalize(Vector4d(0.0, 0.0, 0.0, 1.0));
+        constexpr auto v = MathLib::normalize(Vector4d(0.0, 0.0, 0.0, 1.0));
         static_assert(v.x == 0.0);
         static_assert(v.y == 0.0);
         static_assert(v.z == 0.0);

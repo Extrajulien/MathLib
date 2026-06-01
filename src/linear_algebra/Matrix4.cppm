@@ -5,7 +5,7 @@ module;
 #include <iostream>
 
 export module MathLib:Matrix4;
-namespace math {
+namespace MathLib {
     /**
      * @brief Represents a 4x4 matrix of single-precision floating-point values.
      *

@@ -7,7 +7,7 @@ export module MathLib:Vector3;
 import :internal;
 
 
-namespace math {
+namespace MathLib {
     export
     template <typename T = float>
     struct Vector3 {

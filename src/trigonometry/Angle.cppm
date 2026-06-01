@@ -7,7 +7,7 @@ module;
 export module MathLib:Angle;
 import :Vector2;
 import :internal;
-namespace math {
+namespace MathLib {
     export class Angle {
         float m_radians = 0;
 

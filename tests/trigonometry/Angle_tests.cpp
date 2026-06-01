@@ -5,8 +5,8 @@
 #include "doctest.h"
 import MathLib;
 
-using math::Angle;
-using math::Vector2f;
+using MathLib::Angle;
+using MathLib::Vector2f;
 
 constexpr float pi = std::numbers::pi_v<float>;
 

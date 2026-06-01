@@ -11,7 +11,7 @@ module;
 export module MathLib:Vector2;
 import :internal;
 
-namespace math {
+namespace MathLib {
 
     export
     template <typename T = float>
