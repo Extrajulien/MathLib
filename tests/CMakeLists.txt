@@ -1,6 +1,6 @@
 include(FetchContent)
 
-target_sources(${TEST_TARGET_NAME}
+target_sources(${MATHLIB_TEST_TARGET_NAME}
         PUBLIC
         test_main.cpp
         linear_algebra/Vector2_tests.cpp
@@ -18,7 +18,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(doctest)
 
-target_link_libraries(Tests PRIVATE ${PROJECT_NAME} PRIVATE doctest)
+target_link_libraries(${MATHLIB_TEST_TARGET_NAME} PRIVATE ${PROJECT_NAME} PRIVATE doctest)
 
 # Register to use with CTests
-add_test(NAME RunMathTests COMMAND Tests)
+add_test(NAME RunMathTests COMMAND ${MATHLIB_TEST_TARGET_NAME})
