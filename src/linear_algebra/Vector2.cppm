@@ -191,7 +191,7 @@ namespace MathLib {
     export
     template<typename T, typename U>
     requires ArithmeticTypes<T, U>
-    constexpr auto dot(const Vector2<T>& lhs, const Vector2<U>& rhs) noexcept -> PrecisionResult<T, U> {
+    constexpr auto dot(const Vector2<T> lhs, const Vector2<U> rhs) noexcept -> PrecisionResult<T, U> {
         using ReturnType = PrecisionResult<T, U>;
 
         return static_cast<ReturnType>(lhs.x) * static_cast<ReturnType>(rhs.x) +
