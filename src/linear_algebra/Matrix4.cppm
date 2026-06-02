@@ -9,6 +9,9 @@ namespace MathLib {
     /**
      * @brief Represents a 4x4 matrix of single-precision floating-point values.
      *
+     * @note To maximize performance, pass by value since it will force the memory to be aligned
+     * and thus use <code>movaps</code> (aligned) instead of <code>movups</code> (unaligned)
+     *
      * Matrix4 is optimized for common linear algebra and graphics use cases.
      * Elements are stored internally in column-major order, while constructors
      * accept values in row-major order for readability.
